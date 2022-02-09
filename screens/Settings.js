@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {Text,View} from "react-native";
 import {Avatar, Title, Subheading, Button} from "react-native-paper";
 import firebase from "firebase/compat";
@@ -6,15 +6,27 @@ import firebase from "firebase/compat";
 
 export default function Settings(){
 
+    const[name,setName]=useState("");
+    const[email,setEmail]=useState("");
+
+    useEffect(()=>{
+        firebase.auth().onAuthStateChanged(user=>{
+            setName(user?.displayName ?? "")
+            setEmail(user?.email ?? "")
+
+        })
+    },[])
+
 
     return(
         <View style={{alignItems:"center",marginTop:16}}>
-            <Avatar.Text label={"UN"} />
+            <Avatar.Text label={name.split(' ')
+                .reduce((prev,current)=>(prev + current[0]).toLocaleUpperCase(), '')} />
             <Title>
-                User Name
+                {name}
             </Title>
             <Subheading>
-                user@gmail.com
+                {email}
             </Subheading>
             <Button onPress={()=> firebase.auth().signOut()}>Çıkış Yap</Button>
 
