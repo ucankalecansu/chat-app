@@ -1,4 +1,4 @@
-import React, {useState, useEffect, Fragment} from "react";
+import React, {useState, useEffect} from "react";
 import {View} from "react-native";
 import {List, Avatar,Button, Divider, FAB,Portal,Dialog} from "react-native-paper";
 import {TextInput} from "react-native-paper";
@@ -26,12 +26,12 @@ export default function ChatList(){
     const createChat=async ()=>{
         if(!email || !userEmail) return;
         setIsLoading(true);
-       await firebase.firestore().collection("chats").add({
+       const response=await firebase.firestore().collection("chats").add({
             users:[email,userEmail]
         });
         setIsLoading(false);
         setIsDialogVisible(false);
-        navigation.navigate("Chat");
+        navigation.navigate("Chat", {chatId:response.id});
     };
 
     useEffect(()=>{
@@ -46,13 +46,17 @@ export default function ChatList(){
     return(
        <View style={{flex:1}}>
            {chats.map((chat)=>(
-               <React.Fragment>
+               <React.Fragment>ß
                    <List.Item
-                       title={"User Name"}
-                       description={"Hi,I will be waiting for you"}
+                       title={chat.data().users.find(x=> x !==email )}
+                       description={(chat.data().messages ?? [])[0]?.text ?? undefined}
                        left={()=><Avatar.Text
-                           label={"UN"}
+                           label={chat.data()
+                               .users.find(x=> x !==email )
+                               .split(' ').reduce((prev,current)=>(prev + current[0]).toLocaleUpperCase(),'')}
                            size={56} />}
+
+                       onPress={()=>navigation.navigate("Chat",{chatId:chat.id})}
                    />
                    <Divider inset/>
                </React.Fragment>

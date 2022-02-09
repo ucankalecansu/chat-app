@@ -1,5 +1,4 @@
 import React, {useEffect} from "react";
-import {Text,View} from 'react-native';
 import {NavigationContainer, useNavigation} from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import ChatList from "./screens/ChatList";
@@ -13,6 +12,7 @@ import {Provider} from "react-native-paper";
 import firebase from "firebase/compat";
 import "firebase/auth";
 import "firebase/firestore";
+import { DefaultTheme } from 'react-native-paper';
 
 
 
@@ -31,6 +31,17 @@ const Stack= createNativeStackNavigator();
 const Tabs= createBottomTabNavigator();
 
 
+const theme = {
+    ...DefaultTheme,
+    roundness: 2,
+    colors: {
+        ...DefaultTheme.colors,
+        primary: '#2196f3',
+        accent: '#e91e63',
+    },
+};
+
+
 
 const TabNavigator=()=>{
     const navigation=useNavigation();
@@ -47,8 +58,8 @@ const TabNavigator=()=>{
             <Tabs.Screen
                 name={"ChatList"}
                 component={ChatList}
-                options={({route})=>({
-                    tabBarIcon:({focused,color,size})=>{
+                options={()=>({
+                    tabBarIcon:({color,size})=>{
                         return <Ionicons color={color} size={size} name={"chatbubbles"}/>
 
                     },
@@ -58,8 +69,8 @@ const TabNavigator=()=>{
             <Tabs.Screen
                 name={"Settings"}
                 component={Settings}
-                options={({route})=>({
-                    tabBarIcon:({focused,color,size})=>{
+                options={()=>({
+                    tabBarIcon:({color,size})=>{
                         return <Ionicons color={color} size={size} name={"settings"}/>
                     },
                     tabBarActiveTintColor:"tomato",
@@ -72,7 +83,7 @@ const TabNavigator=()=>{
 export default function App() {
   return (
       <NavigationContainer>
-          <Provider>
+          <Provider theme={theme}>
               <Stack.Navigator>
                   <Stack.Screen
                       name={"Home"}
